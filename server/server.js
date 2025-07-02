@@ -6,6 +6,7 @@ import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import fs from 'fs';
+import multer from 'multer';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -19,11 +20,40 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(join(__dirname, 'uploads')));
 
-// Ensure uploads directory exists
+// Ensure uploads directories exist
 const uploadsDir = join(__dirname, 'uploads');
+const deliveryPhotosDir = join(__dirname, 'uploads/delivery-photos');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
+if (!fs.existsSync(deliveryPhotosDir)) {
+  fs.mkdirSync(deliveryPhotosDir, { recursive: true });
+}
+
+// Configure multer for photo uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, deliveryPhotosDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'delivery-' + uniqueSuffix + '.' + file.originalname.split('.').pop());
+  }
+});
+
+const upload = multer({ 
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  },
+  fileFilter: function (req, file, cb) {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'), false);
+    }
+  }
+});
 
 // Database setup
 const db = new sqlite3.Database(':memory:');
@@ -54,13 +84,17 @@ db.serialize(() => {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
 
-  // Orders table
+  // Enhanced Orders table
   db.run(`CREATE TABLE orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     total_amount DECIMAL(10, 2) NOT NULL,
     status TEXT DEFAULT 'pending',
     shipping_address TEXT NOT NULL,
+    tracking_number TEXT,
+    estimated_delivery DATETIME,
+    delivery_photos TEXT,
+    notes TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id)
   )`);
@@ -203,6 +237,47 @@ db.serialize(() => {
   const hashedPassword = bcrypt.hashSync('admin123', 10);
   db.run(`INSERT INTO users (email, password, name, role) VALUES (?, ?, ?, ?)`, 
     ['admin@ecommerce.com', hashedPassword, 'Admin User', 'admin']);
+
+  // Create sample customer
+  const customerPassword = bcrypt.hashSync('customer123', 10);
+  db.run(`INSERT INTO users (email, password, name, role) VALUES (?, ?, ?, ?)`, 
+    ['customer@example.com', customerPassword, 'John Doe', 'customer']);
+
+  // Create sample orders with different statuses
+  const sampleOrders = [
+    {
+      user_id: 2,
+      total_amount: 299.99,
+      status: 'delivered',
+      shipping_address: '123 Main St, New York, NY 10001',
+      tracking_number: 'TRK123456789',
+      delivery_photos: JSON.stringify([
+        'https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg?auto=compress&cs=tinysrgb&w=400',
+        'https://images.pexels.com/photos/4393668/pexels-photo-4393668.jpeg?auto=compress&cs=tinysrgb&w=400'
+      ]),
+      notes: 'Package delivered to front door'
+    },
+    {
+      user_id: 2,
+      total_amount: 1099.99,
+      status: 'shipped',
+      shipping_address: '456 Oak Ave, Los Angeles, CA 90210',
+      tracking_number: 'TRK987654321',
+      notes: 'Express shipping requested'
+    },
+    {
+      user_id: 2,
+      total_amount: 199.99,
+      status: 'processing',
+      shipping_address: '789 Pine St, Chicago, IL 60601',
+      notes: 'Gift wrapping requested'
+    }
+  ];
+
+  sampleOrders.forEach(order => {
+    db.run(`INSERT INTO orders (user_id, total_amount, status, shipping_address, tracking_number, delivery_photos, notes) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [order.user_id, order.total_amount, order.status, order.shipping_address, order.tracking_number || null, order.delivery_photos || null, order.notes]);
+  });
 });
 
 // Middleware to verify JWT token
@@ -531,7 +606,7 @@ app.post('/api/orders', authenticateToken, (req, res) => {
 
 app.get('/api/orders', authenticateToken, (req, res) => {
   const query = req.user.role === 'admin' 
-    ? `SELECT o.*, u.name as user_name FROM orders o JOIN users u ON o.user_id = u.id ORDER BY o.created_at DESC`
+    ? `SELECT o.*, u.name as user_name, u.email as user_email FROM orders o JOIN users u ON o.user_id = u.id ORDER BY o.created_at DESC`
     : `SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC`;
     
   const params = req.user.role === 'admin' ? [] : [req.user.id];
@@ -540,7 +615,116 @@ app.get('/api/orders', authenticateToken, (req, res) => {
     if (err) {
       return res.status(500).json({ error: 'Failed to fetch orders' });
     }
-    res.json(orders);
+    
+    // Parse delivery photos for each order
+    const processedOrders = orders.map(order => {
+      if (order.delivery_photos) {
+        try {
+          order.delivery_photos = JSON.parse(order.delivery_photos);
+        } catch (e) {
+          order.delivery_photos = [];
+        }
+      } else {
+        order.delivery_photos = [];
+      }
+      return order;
+    });
+    
+    res.json(processedOrders);
+  });
+});
+
+// Admin order management routes
+app.put('/api/admin/orders/:id', authenticateToken, requireAdmin, (req, res) => {
+  const { id } = req.params;
+  const { status, tracking_number, notes, estimated_delivery } = req.body;
+  
+  const updateFields = [];
+  const updateValues = [];
+  
+  if (status) {
+    updateFields.push('status = ?');
+    updateValues.push(status);
+  }
+  
+  if (tracking_number !== undefined) {
+    updateFields.push('tracking_number = ?');
+    updateValues.push(tracking_number);
+  }
+  
+  if (notes !== undefined) {
+    updateFields.push('notes = ?');
+    updateValues.push(notes);
+  }
+  
+  if (estimated_delivery) {
+    updateFields.push('estimated_delivery = ?');
+    updateValues.push(estimated_delivery);
+  }
+  
+  updateValues.push(id);
+  
+  const query = `UPDATE orders SET ${updateFields.join(', ')} WHERE id = ?`;
+  
+  db.run(query, updateValues, function(err) {
+    if (err) {
+      return res.status(500).json({ error: 'Failed to update order' });
+    }
+    
+    if (this.changes === 0) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+    
+    res.json({ message: 'Order updated successfully' });
+  });
+});
+
+// Upload delivery photos
+app.post('/api/admin/orders/:id/photos', authenticateToken, requireAdmin, upload.array('photos', 5), (req, res) => {
+  const { id } = req.params;
+  
+  if (!req.files || req.files.length === 0) {
+    return res.status(400).json({ error: 'No photos uploaded' });
+  }
+  
+  // Get current delivery photos
+  db.get('SELECT delivery_photos FROM orders WHERE id = ?', [id], (err, order) => {
+    if (err) {
+      return res.status(500).json({ error: 'Database error' });
+    }
+    
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+    
+    let currentPhotos = [];
+    if (order.delivery_photos) {
+      try {
+        currentPhotos = JSON.parse(order.delivery_photos);
+      } catch (e) {
+        currentPhotos = [];
+      }
+    }
+    
+    // Add new photo URLs
+    const newPhotos = req.files.map(file => `/uploads/delivery-photos/${file.filename}`);
+    const allPhotos = [...currentPhotos, ...newPhotos];
+    
+    // Update database
+    db.run(
+      'UPDATE orders SET delivery_photos = ? WHERE id = ?',
+      [JSON.stringify(allPhotos), id],
+      function(err) {
+        if (err) {
+          return res.status(500).json({ error: 'Failed to save photo references' });
+        }
+        
+        res.json({ 
+          message: 'Photos uploaded successfully',
+          photos: allPhotos
+        });
+      }
+    );
   });
 });
 

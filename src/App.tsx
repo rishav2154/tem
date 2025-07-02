@@ -13,6 +13,8 @@ import Checkout from './pages/Checkout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Admin from './pages/Admin';
+import AdminOrders from './pages/AdminOrders';
+import Orders from './pages/Orders';
 import Wishlist from './pages/Wishlist';
 import Footer from './components/Footer';
 
@@ -38,6 +40,8 @@ function App() {
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/admin" element={<Admin />} />
+                  <Route path="/admin/orders" element={<AdminOrders />} />
+                  <Route path="/orders" element={<Orders />} />
                   <Route path="/wishlist" element={<Wishlist />} />
                 </Routes>
               </motion.main>

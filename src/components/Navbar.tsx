@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, Heart, User, Menu, X, Search, LogOut, Settings, Bell, Sun, Moon, Sparkles } from 'lucide-react';
+import { ShoppingCart, Heart, User, Menu, X, Search, LogOut, Settings, Bell, Sun, Moon, Sparkles, Package } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -87,6 +87,20 @@ const Navbar: React.FC = () => {
             
             {user ? (
               <>
+                {/* Orders Link */}
+                <Link 
+                  to="/orders" 
+                  className="relative group"
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="p-3 text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors rounded-xl hover:bg-purple-50 dark:hover:bg-purple-900/20"
+                  >
+                    <Package className="h-6 w-6" />
+                  </motion.div>
+                </Link>
+
                 {/* Notifications */}
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -156,15 +170,34 @@ const Navbar: React.FC = () => {
                           <p className="text-sm text-gray-600 dark:text-gray-400">{user.email}</p>
                         </div>
                         
+                        <Link
+                          to="/orders"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                        >
+                          <Package className="h-5 w-5" />
+                          <span>My Orders</span>
+                        </Link>
+                        
                         {user.role === 'admin' && (
-                          <Link
-                            to="/admin"
-                            onClick={() => setIsUserMenuOpen(false)}
-                            className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                          >
-                            <Settings className="h-5 w-5" />
-                            <span>Admin Panel</span>
-                          </Link>
+                          <>
+                            <Link
+                              to="/admin"
+                              onClick={() => setIsUserMenuOpen(false)}
+                              className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                            >
+                              <Settings className="h-5 w-5" />
+                              <span>Admin Panel</span>
+                            </Link>
+                            <Link
+                              to="/admin/orders"
+                              onClick={() => setIsUserMenuOpen(false)}
+                              className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                            >
+                              <Package className="h-5 w-5" />
+                              <span>Manage Orders</span>
+                            </Link>
+                          </>
                         )}
                         
                         <button
@@ -253,6 +286,15 @@ const Navbar: React.FC = () => {
               {user ? (
                 <>
                   <Link
+                    to="/orders"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center justify-between py-3 px-4 text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-xl transition-colors"
+                  >
+                    <span className="font-medium">My Orders</span>
+                    <Package className="h-5 w-5" />
+                  </Link>
+
+                  <Link
                     to="/wishlist"
                     onClick={() => setIsMenuOpen(false)}
                     className="flex items-center justify-between py-3 px-4 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"
@@ -278,14 +320,24 @@ const Navbar: React.FC = () => {
                   </Link>
                   
                   {user.role === 'admin' && (
-                    <Link
-                      to="/admin"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="flex items-center justify-between py-3 px-4 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-colors"
-                    >
-                      <span className="font-medium">Admin Panel</span>
-                      <Settings className="h-5 w-5" />
-                    </Link>
+                    <>
+                      <Link
+                        to="/admin"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex items-center justify-between py-3 px-4 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-colors"
+                      >
+                        <span className="font-medium">Admin Panel</span>
+                        <Settings className="h-5 w-5" />
+                      </Link>
+                      <Link
+                        to="/admin/orders"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex items-center justify-between py-3 px-4 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-colors"
+                      >
+                        <span className="font-medium">Manage Orders</span>
+                        <Package className="h-5 w-5" />
+                      </Link>
+                    </>
                   )}
                   
                   <button
