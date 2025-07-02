@@ -639,6 +639,8 @@ app.put('/api/admin/orders/:id', authenticateToken, requireAdmin, (req, res) => 
   const { id } = req.params;
   const { status, tracking_number, notes, estimated_delivery } = req.body;
   
+  console.log('Updating order:', id, 'with data:', { status, tracking_number, notes, estimated_delivery });
+  
   const updateFields = [];
   const updateValues = [];
   
@@ -662,14 +664,23 @@ app.put('/api/admin/orders/:id', authenticateToken, requireAdmin, (req, res) => 
     updateValues.push(estimated_delivery);
   }
   
+  if (updateFields.length === 0) {
+    return res.status(400).json({ error: 'No fields to update' });
+  }
+  
   updateValues.push(id);
   
   const query = `UPDATE orders SET ${updateFields.join(', ')} WHERE id = ?`;
   
+  console.log('Executing query:', query, 'with values:', updateValues);
+  
   db.run(query, updateValues, function(err) {
     if (err) {
-      return res.status(500).json({ error: 'Failed to update order' });
+      console.error('Database error:', err);
+      return res.status(500).json({ error: 'Failed to update order: ' + err.message });
     }
+    
+    console.log('Update result - changes:', this.changes);
     
     if (this.changes === 0) {
       return res.status(404).json({ error: 'Order not found' });
