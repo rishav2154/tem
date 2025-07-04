@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Star, ShoppingBag, Truck, Shield, Headphones, Zap, Award, Users, TrendingUp, Play, CheckCircle, Globe, Smartphone, Laptop, Watch, Sparkles, Rocket, Target, Clock, Eye, Heart, Crown, Diamond, Flame, Lightning, Infinity, Atom, Orbit, Layers, Hexagon, Triangle, Circle, Square } from 'lucide-react';
+import { ArrowRight, Star, ShoppingBag, Truck, Shield, Headphones, Zap, Award, Users, TrendingUp, Play, CheckCircle, Globe, Smartphone, Laptop, Watch, Sparkles, Rocket, Target, Clock, Eye, Heart, Crown, Diamond, Flame, CloudLightning as Lightning, Infinity, Atom, Orbit, Layers, Hexagon, Triangle, Circle, Square } from 'lucide-react';
 import axios from 'axios';
 
 interface Product {
