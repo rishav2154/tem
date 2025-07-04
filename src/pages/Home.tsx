@@ -251,7 +251,7 @@ const Home: React.FC = () => {
                 <div className="bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 p-[2px] rounded-full">
                   <div className="bg-black rounded-full px-8 py-4 flex items-center space-x-3">
                     <motion.div
-                      animate={{ rotate: 360 }}
+                      animate={{ rotate: [0, 360] }}
                       transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                     >
                       <Atom className="h-6 w-6 text-cyan-400" />
@@ -848,7 +848,7 @@ const Home: React.FC = () => {
             
             <div className="relative p-16">
               <motion.div
-                animate={{ rotate: 360 }}
+                animate={{ rotate: [0, 360] }}
                 transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
                 className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full mb-8 shadow-2xl"
               >
