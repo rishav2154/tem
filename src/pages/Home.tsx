@@ -72,7 +72,7 @@ const Home: React.FC = () => {
       }}
       transition={{
         duration,
-        repeat: Infinity,
+        repeat: 999999,
         delay,
         ease: "easeInOut"
       }}
@@ -94,7 +94,7 @@ const Home: React.FC = () => {
           }}
           transition={{
             duration: Math.random() * 10 + 10,
-            repeat: Infinity,
+            repeat: 999999,
             delay: Math.random() * 5
           }}
           style={{
@@ -118,7 +118,7 @@ const Home: React.FC = () => {
       }}
       transition={{
         duration: 8,
-        repeat: Infinity,
+        repeat: 999999,
         delay,
         ease: "easeInOut"
       }}
@@ -185,7 +185,7 @@ const Home: React.FC = () => {
                 }}
                 transition={{
                   duration: Math.random() * 5 + 3,
-                  repeat: Infinity,
+                  repeat: 999999,
                   delay: Math.random() * 2
                 }}
               />
@@ -252,7 +252,7 @@ const Home: React.FC = () => {
                   <div className="bg-black rounded-full px-8 py-4 flex items-center space-x-3">
                     <motion.div
                       animate={{ rotate: [0, 360] }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                      transition={{ duration: 3, repeat: 999999, ease: "linear" }}
                     >
                       <Atom className="h-6 w-6 text-cyan-400" />
                     </motion.div>
@@ -261,7 +261,7 @@ const Home: React.FC = () => {
                     </span>
                     <motion.div
                       animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
+                      transition={{ duration: 2, repeat: 999999 }}
                     >
                       <Sparkles className="h-5 w-5 text-yellow-400" />
                     </motion.div>
@@ -270,7 +270,7 @@ const Home: React.FC = () => {
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full blur-xl opacity-50"
                   animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
+                  transition={{ duration: 2, repeat: 999999 }}
                 />
               </div>
             </motion.div>
@@ -287,7 +287,7 @@ const Home: React.FC = () => {
                 animate={{
                   backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
                 }}
-                transition={{ duration: 5, repeat: Infinity }}
+                transition={{ duration: 5, repeat: 999999 }}
                 style={{
                   backgroundSize: "200% 200%"
                 }}
@@ -300,7 +300,7 @@ const Home: React.FC = () => {
                 animate={{
                   backgroundPosition: ["100% 50%", "0% 50%", "100% 50%"],
                 }}
-                transition={{ duration: 5, repeat: Infinity, delay: 0.5 }}
+                transition={{ duration: 5, repeat: 999999, delay: 0.5 }}
                 style={{
                   backgroundSize: "200% 200%"
                 }}
@@ -348,7 +348,7 @@ const Home: React.FC = () => {
                   <span>ENTER THE FUTURE</span>
                   <motion.div
                     animate={{ x: [0, 5, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
+                    transition={{ duration: 1.5, repeat: 999999 }}
                   >
                     <ArrowRight className="h-7 w-7" />
                   </motion.div>
@@ -411,12 +411,12 @@ const Home: React.FC = () => {
         >
           <motion.div
             animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
+            transition={{ duration: 2, repeat: 999999 }}
             className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center"
           >
             <motion.div
               animate={{ y: [0, 16, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
+              transition={{ duration: 2, repeat: 999999 }}
               className="w-1 h-3 bg-white rounded-full mt-2"
             />
           </motion.div>
@@ -559,7 +559,7 @@ const Home: React.FC = () => {
           >
             <motion.div
               animate={{ rotate: [0, 360] }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              transition={{ duration: 20, repeat: 999999, ease: "linear" }}
               className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full mb-8 shadow-2xl"
             >
               <Layers className="h-10 w-10 text-white" />
@@ -647,7 +647,7 @@ const Home: React.FC = () => {
                               "0 0 20px rgba(168, 85, 247, 0.5)"
                             ]
                           }}
-                          transition={{ duration: 2, repeat: Infinity }}
+                          transition={{ duration: 2, repeat: 999999 }}
                         >
                           {product.category}
                         </motion.div>
@@ -665,7 +665,7 @@ const Home: React.FC = () => {
                               }}
                               transition={{
                                 duration: 2,
-                                repeat: Infinity,
+                                repeat: 999999,
                                 delay: Math.random() * 2
                               }}
                               style={{
@@ -741,7 +741,7 @@ const Home: React.FC = () => {
                 <span>EXPLORE ALL DIMENSIONS</span>
                 <motion.div
                   animate={{ x: [0, 10, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
+                  transition={{ duration: 1.5, repeat: 999999 }}
                   className="ml-4"
                 >
                   <ArrowRight className="h-6 w-6" />
@@ -849,7 +849,7 @@ const Home: React.FC = () => {
             <div className="relative p-16">
               <motion.div
                 animate={{ rotate: [0, 360] }}
-                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: 10, repeat: 999999, ease: "linear" }}
                 className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full mb-8 shadow-2xl"
               >
                 <Crown className="h-12 w-12 text-white" />
@@ -879,7 +879,7 @@ const Home: React.FC = () => {
                   <span>TRANSCEND NOW</span>
                   <motion.div
                     animate={{ x: [0, 10, 0] }}
-                    transition={{ duration: 1, repeat: Infinity }}
+                    transition={{ duration: 1, repeat: 999999 }}
                   >
                     <ArrowRight className="h-8 w-8" />
                   </motion.div>
