@@ -17,7 +17,6 @@ interface Product {
 const Home: React.FC = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll();
@@ -38,15 +37,6 @@ const Home: React.FC = () => {
     };
 
     fetchFeaturedProducts();
-  }, []);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
   useEffect(() => {
@@ -83,14 +73,14 @@ const Home: React.FC = () => {
 
   const ParticleField = () => (
     <div className="absolute inset-0 overflow-hidden">
-      {[...Array(50)].map((_, i) => (
+      {[...Array(30)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute w-1 h-1 bg-white rounded-full opacity-30"
+          className="absolute w-1 h-1 bg-blue-400/30 rounded-full"
           animate={{
             x: [0, Math.random() * 100 - 50],
             y: [0, Math.random() * 100 - 50],
-            opacity: [0, 1, 0]
+            opacity: [0, 0.6, 0]
           }}
           transition={{
             duration: Math.random() * 10 + 10,
@@ -104,25 +94,6 @@ const Home: React.FC = () => {
         />
       ))}
     </div>
-  );
-
-  const GlowingOrb = ({ size = 200, color = "blue", delay = 0 }: { size?: number, color?: string, delay?: number }) => (
-    <motion.div
-      className={`absolute rounded-full bg-gradient-to-r from-${color}-400 to-${color}-600 opacity-20 blur-3xl`}
-      style={{ width: size, height: size }}
-      animate={{
-        scale: [1, 1.2, 1],
-        opacity: [0.2, 0.4, 0.2],
-        x: [0, 50, 0],
-        y: [0, -30, 0]
-      }}
-      transition={{
-        duration: 8,
-        repeat: 999999,
-        delay,
-        ease: "easeInOut"
-      }}
-    />
   );
 
   const containerVariants = {
@@ -163,50 +134,37 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden relative">
-      {/* Cosmic Background */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-gray-900 dark:via-slate-900 dark:to-blue-900 text-gray-900 dark:text-white overflow-hidden relative">
+      {/* Professional Background */}
       <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-black"></div>
-        <ParticleField />
-        <GlowingOrb size={300} color="purple" delay={0} />
-        <GlowingOrb size={200} color="blue" delay={2} />
-        <GlowingOrb size={250} color="pink" delay={4} />
+        {/* Subtle gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-white/80 to-purple-50/50 dark:from-gray-900/90 dark:via-slate-900/90 dark:to-blue-900/90"></div>
         
-        {/* Animated Grid */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="grid grid-cols-20 grid-rows-20 h-full w-full">
-            {[...Array(400)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="border border-white/10"
-                animate={{
-                  opacity: [0.1, 0.3, 0.1],
-                  scale: [1, 1.1, 1]
-                }}
-                transition={{
-                  duration: Math.random() * 5 + 3,
-                  repeat: 999999,
-                  delay: Math.random() * 2
-                }}
-              />
-            ))}
-          </div>
+        {/* Minimal particle field */}
+        <ParticleField />
+        
+        {/* Subtle geometric patterns */}
+        <div className="absolute inset-0 opacity-5 dark:opacity-10">
+          <div className="absolute top-20 left-20 w-32 h-32 border border-blue-300 dark:border-blue-600 rounded-full"></div>
+          <div className="absolute top-40 right-32 w-24 h-24 border border-purple-300 dark:border-purple-600 rotate-45"></div>
+          <div className="absolute bottom-32 left-1/4 w-20 h-20 border border-green-300 dark:border-green-600 rounded-full"></div>
+          <div className="absolute bottom-40 right-1/3 w-28 h-28 border border-orange-300 dark:border-orange-600 rotate-12"></div>
+        </div>
+
+        {/* Professional grid pattern */}
+        <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.05]">
+          <div 
+            className="w-full h-full"
+            style={{
+              backgroundImage: `
+                linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
+              `,
+              backgroundSize: '60px 60px'
+            }}
+          />
         </div>
       </div>
-
-      {/* Mouse Follower */}
-      <motion.div
-        className="fixed w-6 h-6 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full pointer-events-none z-50 mix-blend-difference"
-        animate={{
-          x: mousePosition.x - 12,
-          y: mousePosition.y - 12,
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 500,
-          damping: 28
-        }}
-      />
 
       {/* Revolutionary Hero Section */}
       <motion.section 
@@ -215,22 +173,16 @@ const Home: React.FC = () => {
         className="relative min-h-screen flex items-center justify-center z-10"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          {/* Floating Geometric Shapes */}
+          {/* Floating Geometric Shapes - More subtle */}
           <div className="absolute inset-0 overflow-hidden">
             <FloatingElement delay={0} duration={15}>
-              <div className="absolute top-20 left-20 w-20 h-20 border-2 border-cyan-400 rotate-45 opacity-30"></div>
+              <div className="absolute top-20 left-20 w-16 h-16 border border-blue-200 dark:border-blue-700 rotate-45 opacity-20"></div>
             </FloatingElement>
             <FloatingElement delay={2} duration={18}>
-              <div className="absolute top-40 right-32 w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full opacity-40"></div>
+              <div className="absolute top-40 right-32 w-12 h-12 bg-gradient-to-r from-purple-200 to-pink-200 dark:from-purple-800 dark:to-pink-800 rounded-full opacity-30"></div>
             </FloatingElement>
             <FloatingElement delay={4} duration={12}>
-              <div className="absolute bottom-32 left-1/4 w-12 h-12 border-2 border-yellow-400 rounded-full opacity-30"></div>
-            </FloatingElement>
-            <FloatingElement delay={1} duration={20}>
-              <Triangle className="absolute top-1/3 right-20 w-10 h-10 text-green-400 opacity-40" />
-            </FloatingElement>
-            <FloatingElement delay={3} duration={16}>
-              <Hexagon className="absolute bottom-40 right-1/3 w-14 h-14 text-blue-400 opacity-30" />
+              <div className="absolute bottom-32 left-1/4 w-10 h-10 border border-green-200 dark:border-green-700 rounded-full opacity-20"></div>
             </FloatingElement>
           </div>
 
@@ -240,7 +192,7 @@ const Home: React.FC = () => {
             transition={{ duration: 1, type: "spring", stiffness: 100 }}
             className="relative z-10"
           >
-            {/* Holographic Badge */}
+            {/* Professional Badge */}
             <motion.div
               initial={{ opacity: 0, y: -50 }}
               animate={{ opacity: 1, y: 0 }}
@@ -248,127 +200,87 @@ const Home: React.FC = () => {
               className="inline-flex items-center mb-8"
             >
               <div className="relative">
-                <div className="bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 p-[2px] rounded-full">
-                  <div className="bg-black rounded-full px-8 py-4 flex items-center space-x-3">
+                <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-[1px] rounded-full">
+                  <div className="bg-white dark:bg-gray-900 rounded-full px-6 py-3 flex items-center space-x-3">
                     <motion.div
                       animate={{ rotate: [0, 360] }}
-                      transition={{ duration: 3, repeat: 999999, ease: "linear" }}
+                      transition={{ duration: 8, repeat: 999999, ease: "linear" }}
                     >
-                      <Atom className="h-6 w-6 text-cyan-400" />
+                      <Sparkles className="h-5 w-5 text-blue-600" />
                     </motion.div>
-                    <span className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                      NEXT-GEN COMMERCE
+                    <span className="text-sm font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                      NEXT-GENERATION COMMERCE
                     </span>
-                    <motion.div
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 2, repeat: 999999 }}
-                    >
-                      <Sparkles className="h-5 w-5 text-yellow-400" />
-                    </motion.div>
                   </div>
                 </div>
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full blur-xl opacity-50"
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 2, repeat: 999999 }}
-                />
               </div>
             </motion.div>
 
-            {/* Mind-Blowing Title */}
+            {/* Professional Title */}
             <motion.h1
               variants={textVariants}
               initial="hidden"
               animate="visible"
-              className="text-8xl md:text-9xl lg:text-[12rem] font-black mb-8 leading-none"
+              className="text-6xl md:text-7xl lg:text-8xl font-black mb-8 leading-tight"
             >
               <motion.span
-                className="inline-block bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent"
-                animate={{
-                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                }}
-                transition={{ duration: 5, repeat: 999999 }}
-                style={{
-                  backgroundSize: "200% 200%"
-                }}
+                className="inline-block bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 dark:from-white dark:via-blue-200 dark:to-purple-200 bg-clip-text text-transparent"
               >
-                SHOP
+                Shop the
               </motion.span>
               <br />
               <motion.span
-                className="inline-block bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600 bg-clip-text text-transparent"
-                animate={{
-                  backgroundPosition: ["100% 50%", "0% 50%", "100% 50%"],
-                }}
-                transition={{ duration: 5, repeat: 999999, delay: 0.5 }}
-                style={{
-                  backgroundSize: "200% 200%"
-                }}
+                className="inline-block bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
               >
-                BEYOND
+                Future
               </motion.span>
             </motion.h1>
 
-            {/* Subtitle with Typewriter Effect */}
+            {/* Professional Subtitle */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1, duration: 1 }}
-              className="text-2xl md:text-4xl mb-12 text-gray-300 max-w-4xl mx-auto leading-relaxed"
+              className="text-xl md:text-2xl mb-12 text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed"
             >
-              <motion.span
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ delay: 1.5, duration: 3, ease: "easeInOut" }}
-                className="inline-block overflow-hidden whitespace-nowrap"
-              >
-                Experience the future of shopping with AI-powered recommendations, 
-                quantum-speed delivery, and products that transcend reality.
-              </motion.span>
+              Experience the next generation of shopping with AI-powered recommendations, 
+              lightning-fast delivery, and products that define tomorrow.
             </motion.div>
 
-            {/* Holographic Buttons */}
+            {/* Professional Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 2, duration: 0.8 }}
-              className="flex flex-col sm:flex-row gap-8 justify-center items-center mb-16"
+              className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
             >
               <motion.div
-                whileHover={{ scale: 1.05, rotateY: 5 }}
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="relative group"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-2xl blur-xl opacity-70 group-hover:opacity-100 transition-opacity"></div>
                 <Link
                   to="/products"
-                  className="relative bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-12 py-6 rounded-2xl text-xl font-bold flex items-center space-x-4 hover:shadow-2xl transition-all duration-300"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl text-lg font-semibold flex items-center space-x-3 hover:shadow-xl transition-all duration-300"
                 >
-                  <Rocket className="h-7 w-7" />
-                  <span>ENTER THE FUTURE</span>
-                  <motion.div
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{ duration: 1.5, repeat: 999999 }}
-                  >
-                    <ArrowRight className="h-7 w-7" />
-                  </motion.div>
+                  <ShoppingBag className="h-6 w-6" />
+                  <span>Start Shopping</span>
+                  <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </motion.div>
 
               <motion.div
-                whileHover={{ scale: 1.05, rotateY: -5 }}
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative group"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-yellow-500 rounded-2xl blur-xl opacity-50 group-hover:opacity-80 transition-opacity"></div>
-                <button className="relative bg-black/50 backdrop-blur-sm border-2 border-white/20 text-white px-12 py-6 rounded-2xl text-xl font-bold flex items-center space-x-4 hover:border-white/40 transition-all duration-300">
-                  <Play className="h-7 w-7" />
-                  <span>WATCH MAGIC</span>
+                <button className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white px-8 py-4 rounded-xl text-lg font-semibold flex items-center space-x-3 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300">
+                  <Play className="h-6 w-6" />
+                  <span>Watch Demo</span>
                 </button>
               </motion.div>
             </motion.div>
 
-            {/* Floating Stats */}
+            {/* Professional Stats */}
             <motion.div
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
@@ -376,10 +288,10 @@ const Home: React.FC = () => {
               className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
             >
               {[
-                { icon: Users, number: "10M+", label: "Happy Customers", color: "cyan" },
-                { icon: Globe, number: "200+", label: "Countries", color: "purple" },
-                { icon: Zap, number: "99.9%", label: "Uptime", color: "yellow" },
-                { icon: Crown, number: "#1", label: "Platform", color: "pink" }
+                { icon: Users, number: "5M+", label: "Happy Customers", color: "blue" },
+                { icon: Globe, number: "180+", label: "Countries", color: "purple" },
+                { icon: Zap, number: "99.9%", label: "Uptime", color: "green" },
+                { icon: Award, number: "#1", label: "Platform", color: "orange" }
               ].map((stat, index) => (
                 <motion.div
                   key={index}
@@ -389,20 +301,20 @@ const Home: React.FC = () => {
                   className="text-center group"
                 >
                   <motion.div
-                    whileHover={{ scale: 1.1, rotateY: 180 }}
+                    whileHover={{ scale: 1.1 }}
                     className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-${stat.color}-500 to-${stat.color}-600 rounded-2xl mb-4 shadow-lg`}
                   >
                     <stat.icon className="h-8 w-8 text-white" />
                   </motion.div>
-                  <div className="text-3xl font-black text-white mb-2">{stat.number}</div>
-                  <div className="text-gray-400 font-medium">{stat.label}</div>
+                  <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{stat.number}</div>
+                  <div className="text-gray-600 dark:text-gray-400 font-medium">{stat.label}</div>
                 </motion.div>
               ))}
             </motion.div>
           </motion.div>
         </div>
 
-        {/* Scroll Indicator */}
+        {/* Professional Scroll Indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -412,19 +324,19 @@ const Home: React.FC = () => {
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: 999999 }}
-            className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center"
+            className="w-6 h-10 border-2 border-gray-400 dark:border-gray-600 rounded-full flex justify-center"
           >
             <motion.div
               animate={{ y: [0, 16, 0] }}
               transition={{ duration: 2, repeat: 999999 }}
-              className="w-1 h-3 bg-white rounded-full mt-2"
+              className="w-1 h-3 bg-gray-400 dark:bg-gray-600 rounded-full mt-2"
             />
           </motion.div>
         </motion.div>
       </motion.section>
 
-      {/* Quantum Features Section */}
-      <section className="relative py-32 z-10">
+      {/* Professional Features Section */}
+      <section className="relative py-24 z-10 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 100 }}
@@ -438,21 +350,17 @@ const Home: React.FC = () => {
               whileInView={{ scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
-              className="inline-flex items-center bg-gradient-to-r from-purple-500/20 to-cyan-500/20 backdrop-blur-sm border border-white/10 rounded-full px-8 py-4 mb-8"
+              className="inline-flex items-center bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full px-6 py-3 mb-8"
             >
-              <Lightning className="h-6 w-6 text-yellow-400 mr-3" />
-              <span className="text-lg font-bold">QUANTUM FEATURES</span>
-              <Infinity className="h-6 w-6 text-cyan-400 ml-3" />
+              <Lightning className="h-5 w-5 mr-2" />
+              <span className="text-sm font-bold">ADVANCED FEATURES</span>
             </motion.div>
             
-            <h2 className="text-6xl md:text-7xl font-black mb-8">
-              <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-400 bg-clip-text text-transparent">
-                BEYOND IMAGINATION
-              </span>
+            <h2 className="text-5xl md:text-6xl font-bold mb-8 text-gray-900 dark:text-white">
+              Innovation That <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Transforms</span>
             </h2>
-            <p className="text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-              Experience features that exist in the future, brought to you today through 
-              cutting-edge technology and impossible innovation.
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+              Experience cutting-edge features that revolutionize how you discover, compare, and purchase products online
             </p>
           </motion.div>
 
@@ -465,81 +373,62 @@ const Home: React.FC = () => {
           >
             {[
               { 
-                icon: Atom, 
-                title: 'Quantum AI Search', 
-                desc: 'Our AI exists in multiple dimensions simultaneously, finding products before you even think of them.',
-                color: 'cyan',
-                gradient: 'from-cyan-500 to-blue-600'
+                icon: Rocket, 
+                title: 'AI-Powered Search', 
+                desc: 'Find exactly what you need with our intelligent product discovery engine',
+                color: 'blue',
+                gradient: 'from-blue-500 to-cyan-500'
               },
               { 
-                icon: Rocket, 
-                title: 'Teleportation Delivery', 
-                desc: 'Products arrive through quantum tunneling. Delivery time: 0.001 seconds across any distance.',
-                color: 'purple',
-                gradient: 'from-purple-500 to-pink-600'
+                icon: Clock, 
+                title: 'Instant Delivery', 
+                desc: 'Get your products delivered within hours using our advanced logistics network',
+                color: 'green',
+                gradient: 'from-green-500 to-emerald-500'
               },
               { 
                 icon: Shield, 
-                title: 'Blockchain DNA Security', 
-                desc: 'Your data is protected by quantum encryption that exists in parallel universes.',
-                color: 'green',
-                gradient: 'from-green-500 to-emerald-600'
+                title: 'Advanced Security', 
+                desc: 'Your data is protected with enterprise-grade encryption and security protocols',
+                color: 'purple',
+                gradient: 'from-purple-500 to-pink-500'
               },
               { 
-                icon: Eye, 
-                title: 'Mind-Reading Interface', 
-                desc: 'Our neural interface reads your thoughts to curate the perfect shopping experience.',
-                color: 'yellow',
-                gradient: 'from-yellow-500 to-orange-600'
+                icon: Sparkles, 
+                title: 'Smart Recommendations', 
+                desc: 'Discover products you love with our advanced machine learning algorithms',
+                color: 'orange',
+                gradient: 'from-orange-500 to-red-500'
               },
               { 
-                icon: Diamond, 
-                title: 'Holographic Products', 
-                desc: 'Try products in augmented reality before they materialize in your dimension.',
-                color: 'pink',
-                gradient: 'from-pink-500 to-red-600'
-              },
-              { 
-                icon: Orbit, 
-                title: 'Time-Loop Returns', 
-                desc: 'Return products by sending them back in time. No questions asked, literally.',
+                icon: Users, 
+                title: 'Community Reviews', 
+                desc: 'Make informed decisions with authentic reviews from verified customers',
                 color: 'indigo',
-                gradient: 'from-indigo-500 to-purple-600'
+                gradient: 'from-indigo-500 to-purple-500'
+              },
+              { 
+                icon: TrendingUp, 
+                title: 'Price Tracking', 
+                desc: 'Never miss a deal with intelligent price monitoring and alerts',
+                color: 'teal',
+                gradient: 'from-teal-500 to-cyan-500'
               }
             ].map((feature, index) => (
               <motion.div
                 key={index}
                 variants={itemVariants}
-                whileHover={{ 
-                  scale: 1.05, 
-                  rotateY: 10,
-                  z: 50
-                }}
-                className="group relative"
+                whileHover={{ y: -8 }}
+                className="group"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-white/10 rounded-3xl backdrop-blur-sm border border-white/10 group-hover:border-white/20 transition-all duration-500"></div>
-                <div className="relative p-8 h-full">
-                  <motion.div
-                    whileHover={{ rotate: 360, scale: 1.2 }}
-                    transition={{ duration: 0.8 }}
-                    className={`inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r ${feature.gradient} rounded-3xl mb-6 shadow-2xl`}
-                  >
-                    <feature.icon className="h-10 w-10 text-white" />
-                  </motion.div>
-                  
-                  <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-cyan-400 transition-colors">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-500 border border-gray-100 dark:border-gray-700 h-full">
+                  <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${feature.gradient} rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                    <feature.icon className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-300 leading-relaxed text-lg group-hover:text-white transition-colors">
-                    {feature.desc}
-                  </p>
-                  
-                  <motion.div
-                    className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                    whileHover={{ scale: 1.2 }}
-                  >
-                    <ArrowRight className="h-6 w-6 text-cyan-400" />
-                  </motion.div>
+                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{feature.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -547,8 +436,8 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Holographic Product Showcase */}
-      <section className="relative py-32 z-10">
+      {/* Professional Product Showcase */}
+      <section className="relative py-24 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -558,20 +447,16 @@ const Home: React.FC = () => {
             className="text-center mb-20"
           >
             <motion.div
-              animate={{ rotate: [0, 360] }}
-              transition={{ duration: 20, repeat: 999999, ease: "linear" }}
-              className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full mb-8 shadow-2xl"
+              className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl mb-8 shadow-lg"
             >
-              <Layers className="h-10 w-10 text-white" />
+              <Star className="h-8 w-8 text-white" />
             </motion.div>
             
-            <h2 className="text-6xl md:text-7xl font-black mb-8">
-              <span className="bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600 bg-clip-text text-transparent">
-                FEATURED UNIVERSE
-              </span>
+            <h2 className="text-5xl md:text-6xl font-bold mb-8 text-gray-900 dark:text-white">
+              Featured Products
             </h2>
-            <p className="text-2xl text-gray-300 max-w-4xl mx-auto">
-              Products from across the multiverse, curated by interdimensional AI
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto">
+              Discover our handpicked selection of the most innovative and popular products
             </p>
           </motion.div>
 
@@ -583,13 +468,13 @@ const Home: React.FC = () => {
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-gradient-to-br from-white/10 to-white/5 rounded-3xl overflow-hidden backdrop-blur-sm border border-white/10 animate-pulse"
+                  className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg animate-pulse"
                 >
-                  <div className="w-full h-64 bg-gradient-to-br from-purple-500/20 to-cyan-500/20"></div>
+                  <div className="w-full h-64 bg-gray-200 dark:bg-gray-700"></div>
                   <div className="p-6">
-                    <div className="h-4 bg-white/20 rounded mb-3"></div>
-                    <div className="h-4 bg-white/20 rounded w-2/3 mb-3"></div>
-                    <div className="h-6 bg-white/20 rounded w-1/3"></div>
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-3"></div>
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3 mb-3"></div>
+                    <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
                   </div>
                 </motion.div>
               ))}
@@ -606,115 +491,47 @@ const Home: React.FC = () => {
                 <motion.div
                   key={product.id}
                   variants={itemVariants}
-                  whileHover={{ 
-                    y: -20, 
-                    rotateY: 10,
-                    scale: 1.05
-                  }}
-                  className="group relative"
+                  whileHover={{ y: -12 }}
+                  className="group"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 rounded-3xl backdrop-blur-sm border border-white/10 group-hover:border-white/30 transition-all duration-500"></div>
-                  <div className="relative overflow-hidden rounded-3xl">
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 border border-gray-100 dark:border-gray-700">
                     <Link to={`/products/${product.id}`}>
                       <div className="relative overflow-hidden">
                         <motion.img
                           src={product.image}
                           alt={product.name}
                           className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700"
-                          whileHover={{ scale: 1.1 }}
                         />
                         
-                        {/* Holographic Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        
-                        {/* Floating Elements */}
-                        <motion.div
-                          className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-full px-3 py-2"
-                          whileHover={{ scale: 1.1 }}
-                        >
-                          <div className="flex items-center space-x-1">
-                            <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                            <span className="text-sm font-bold text-white">{product.rating}</span>
+                        <div className="absolute top-4 right-4">
+                          <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-full px-3 py-2 shadow-lg">
+                            <div className="flex items-center space-x-1">
+                              <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                              <span className="text-sm font-bold text-gray-900 dark:text-white">{product.rating}</span>
+                            </div>
                           </div>
-                        </motion.div>
+                        </div>
                         
-                        <motion.div
-                          className="absolute top-4 left-4 bg-gradient-to-r from-purple-500 to-cyan-500 text-white text-xs font-bold px-3 py-2 rounded-full"
-                          animate={{ 
-                            boxShadow: [
-                              "0 0 20px rgba(168, 85, 247, 0.5)",
-                              "0 0 40px rgba(6, 182, 212, 0.5)",
-                              "0 0 20px rgba(168, 85, 247, 0.5)"
-                            ]
-                          }}
-                          transition={{ duration: 2, repeat: 999999 }}
-                        >
-                          {product.category}
-                        </motion.div>
-
-                        {/* Quantum Particles */}
-                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                          {[...Array(10)].map((_, i) => (
-                            <motion.div
-                              key={i}
-                              className="absolute w-1 h-1 bg-cyan-400 rounded-full"
-                              animate={{
-                                x: [0, Math.random() * 200 - 100],
-                                y: [0, Math.random() * 200 - 100],
-                                opacity: [0, 1, 0]
-                              }}
-                              transition={{
-                                duration: 2,
-                                repeat: 999999,
-                                delay: Math.random() * 2
-                              }}
-                              style={{
-                                left: `${Math.random() * 100}%`,
-                                top: `${Math.random() * 100}%`
-                              }}
-                            />
-                          ))}
+                        <div className="absolute top-4 left-4">
+                          <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs font-bold px-3 py-2 rounded-full shadow-lg">
+                            {product.category}
+                          </span>
                         </div>
                       </div>
                       
                       <div className="p-6">
-                        <h3 className="font-bold text-white mb-3 line-clamp-2 group-hover:text-cyan-400 transition-colors text-lg">
+                        <h3 className="font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors text-lg">
                           {product.name}
                         </h3>
                         
                         <div className="flex items-center justify-between">
-                          <motion.span 
-                            className="text-3xl font-black bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent"
-                            whileHover={{ scale: 1.1 }}
-                          >
+                          <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                             ${product.price}
-                          </motion.span>
-                          <span className="text-sm text-gray-400 bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm">
+                          </span>
+                          <span className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full font-medium">
                             {product.reviews_count} reviews
                           </span>
                         </div>
-
-                        {/* Hover Actions */}
-                        <motion.div
-                          className="flex space-x-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                          initial={{ y: 20 }}
-                          whileInView={{ y: 0 }}
-                        >
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="flex-1 bg-gradient-to-r from-cyan-500 to-purple-600 text-white py-2 px-4 rounded-xl font-semibold text-sm"
-                          >
-                            Add to Cart
-                          </motion.button>
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            className="bg-white/20 backdrop-blur-sm text-white p-2 rounded-xl"
-                          >
-                            <Heart className="h-5 w-5" />
-                          </motion.button>
-                        </motion.div>
                       </div>
                     </Link>
                   </div>
@@ -724,167 +541,79 @@ const Home: React.FC = () => {
           )}
 
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
             className="text-center mt-16"
           >
-            <motion.div
-              whileHover={{ scale: 1.05, rotateX: 5 }}
-              whileTap={{ scale: 0.95 }}
+            <Link
+              to="/products"
+              className="inline-flex items-center bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 group"
             >
-              <Link
-                to="/products"
-                className="inline-flex items-center bg-gradient-to-r from-yellow-500 via-red-500 to-purple-600 text-white px-12 py-6 rounded-2xl font-bold text-xl hover:shadow-2xl transition-all duration-300 group"
-              >
-                <span>EXPLORE ALL DIMENSIONS</span>
-                <motion.div
-                  animate={{ x: [0, 10, 0] }}
-                  transition={{ duration: 1.5, repeat: 999999 }}
-                  className="ml-4"
-                >
-                  <ArrowRight className="h-6 w-6" />
-                </motion.div>
-              </Link>
-            </motion.div>
+              Explore All Products
+              <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </motion.div>
         </div>
       </section>
 
-      {/* Testimonials Carousel */}
-      <section className="relative py-32 z-10">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Professional Newsletter Section */}
+      <section className="py-24 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white relative overflow-hidden z-10">
+        <div className="absolute inset-0 bg-black/20"></div>
+        
+        <div className="relative max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
           >
-            <h2 className="text-5xl font-black mb-8">
-              <span className="bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
-                INTERDIMENSIONAL REVIEWS
-              </span>
-            </h2>
-          </motion.div>
-
-          <div className="relative h-80 overflow-hidden">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentTestimonial}
-                initial={{ opacity: 0, x: 300, rotateY: 90 }}
-                animate={{ opacity: 1, x: 0, rotateY: 0 }}
-                exit={{ opacity: 0, x: -300, rotateY: -90 }}
-                transition={{ duration: 0.8, type: "spring" }}
-                className="absolute inset-0 flex items-center justify-center"
-              >
-                <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20 rounded-3xl p-12 max-w-4xl mx-auto text-center">
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 0.3, type: "spring" }}
-                    className="w-20 h-20 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full flex items-center justify-center text-2xl font-bold text-white mx-auto mb-8"
-                  >
-                    {testimonials[currentTestimonial].avatar}
-                  </motion.div>
-                  
-                  <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
-                    className="text-2xl text-white mb-8 leading-relaxed"
-                  >
-                    "{testimonials[currentTestimonial].text}"
-                  </motion.p>
-                  
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.7 }}
-                  >
-                    <h4 className="text-xl font-bold text-cyan-400 mb-2">
-                      {testimonials[currentTestimonial].name}
-                    </h4>
-                    <p className="text-gray-400">
-                      {testimonials[currentTestimonial].role}
-                    </p>
-                  </motion.div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          {/* Testimonial Indicators */}
-          <div className="flex justify-center space-x-4 mt-8">
-            {testimonials.map((_, index) => (
-              <motion.button
-                key={index}
-                onClick={() => setCurrentTestimonial(index)}
-                className={`w-4 h-4 rounded-full transition-all duration-300 ${
-                  index === currentTestimonial 
-                    ? 'bg-gradient-to-r from-cyan-500 to-purple-500 scale-125' 
-                    : 'bg-white/30 hover:bg-white/50'
-                }`}
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.9 }}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA Section */}
-      <section className="relative py-32 z-10">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, type: "spring" }}
-            className="relative"
-          >
-            {/* Cosmic Background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-900/50 via-blue-900/50 to-pink-900/50 rounded-3xl backdrop-blur-sm border border-white/10"></div>
+            <div className="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-white/20">
+              <Zap className="h-5 w-5 text-yellow-400 mr-3" />
+              <span className="font-bold">EXCLUSIVE ACCESS</span>
+            </div>
             
-            <div className="relative p-16">
-              <motion.div
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 10, repeat: 999999, ease: "linear" }}
-                className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full mb-8 shadow-2xl"
-              >
-                <Crown className="h-12 w-12 text-white" />
-              </motion.div>
-              
-              <h2 className="text-6xl md:text-7xl font-black mb-8">
-                <span className="bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600 bg-clip-text text-transparent">
-                  JOIN THE REVOLUTION
-                </span>
-              </h2>
-              
-              <p className="text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
-                Step into the future of commerce. Experience shopping like never before, 
-                where reality bends to your desires and the impossible becomes everyday.
-              </p>
-              
-              <motion.div
-                whileHover={{ scale: 1.05, rotateX: 5 }}
-                whileTap={{ scale: 0.95 }}
-                className="inline-block"
-              >
-                <Link
-                  to="/register"
-                  className="bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white px-16 py-8 rounded-2xl text-2xl font-bold hover:shadow-2xl transition-all duration-300 inline-flex items-center space-x-4"
+            <h2 className="text-4xl md:text-5xl font-bold mb-8">
+              Stay Ahead of the Curve
+            </h2>
+            <p className="text-xl mb-12 text-white/90 leading-relaxed max-w-3xl mx-auto">
+              Get exclusive access to new arrivals, limited-edition drops, and insider deals. 
+              Join our community of smart shoppers.
+            </p>
+            
+            <div className="max-w-lg mx-auto mb-8">
+              <div className="flex gap-4 p-2 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
+                <input
+                  type="email"
+                  placeholder="Enter your email address"
+                  className="flex-1 px-4 py-3 bg-transparent text-white placeholder-white/70 focus:outline-none"
+                />
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-white text-blue-600 px-6 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors"
                 >
-                  <Flame className="h-8 w-8" />
-                  <span>TRANSCEND NOW</span>
-                  <motion.div
-                    animate={{ x: [0, 10, 0] }}
-                    transition={{ duration: 1, repeat: 999999 }}
-                  >
-                    <ArrowRight className="h-8 w-8" />
-                  </motion.div>
-                </Link>
-              </motion.div>
+                  Subscribe
+                </motion.button>
+              </div>
+              <p className="text-sm text-white/70 mt-4">
+                No spam, unsubscribe anytime. We respect your privacy.
+              </p>
+            </div>
+
+            {/* Social Proof */}
+            <div className="flex items-center justify-center space-x-8 text-sm opacity-80">
+              <div className="flex items-center space-x-2">
+                <div className="flex -space-x-2">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="w-8 h-8 bg-white/20 rounded-full border-2 border-white"></div>
+                  ))}
+                </div>
+                <span>5M+ subscribers</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                <span>4.9/5 rating</span>
+              </div>
             </div>
           </motion.div>
         </div>
